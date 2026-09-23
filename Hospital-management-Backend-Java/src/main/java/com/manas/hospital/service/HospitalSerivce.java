@@ -24,32 +24,44 @@ public class HospitalSerivce {
 
     public Hospital save(Hospital hospital) {
 
-        Map<String,String> duplicateErrors = new LinkedHashMap<>();
+        Map<String, String> duplicateErrors = new LinkedHashMap<>();
 
-        if(hospitalRepository.findByPhone(hospital.getPhone()).isPresent()){
+        if (hospitalRepository.findByPhone(hospital.getPhone()).isPresent()) {
             duplicateErrors.put("phone", "The provided phone number is already registered");
         }
 
-        if(hospitalRepository.findByEmail(hospital.getEmail()).isPresent())
-        {
+        if (hospitalRepository.findByEmail(hospital.getEmail()).isPresent()) {
             duplicateErrors.put("email", "The provided email address is already registered");
         }
 
-
-        if(!duplicateErrors.isEmpty())
-        {
+        if (!duplicateErrors.isEmpty()) {
             throw new DuplicateEntryException(duplicateErrors);
         }
         return hospitalRepository.save(hospital);
     }
-
 
     public Hospital getHospitalById(Long id) {
         return hospitalRepository.findById(id).orElseThrow(() -> new HospitalNotFoundException("Hospital Not Found with ID:" + id));
     }
 
     public Hospital updateHospitals(Long id, Hospital newHospital) {
+
         Hospital oldHospital = hospitalRepository.findById(id).orElseThrow(() -> new HospitalNotFoundException("Hospital Not Found with ID:" + id));
+
+        Map<String, String> duplicateErrors = new LinkedHashMap<>();
+
+        // 2. Check if ANY OTHER hospital is already using this phone
+        if (hospitalRepository.findByPhoneAndIdNot(newHospital.getPhone(), id).isPresent()) {
+            duplicateErrors.put("phone", "The provided phone number is already registered to another hospital");
+        }
+
+        if (hospitalRepository.findByEmailAndIdNot(newHospital.getEmail(), id).isPresent()) {
+            duplicateErrors.put("email", "The provided email address is already registered");
+        }
+
+        if (!duplicateErrors.isEmpty()) {
+            throw new DuplicateEntryException(duplicateErrors);
+        }
 
         oldHospital.setAddress(newHospital.getAddress());
         oldHospital.setEmail(newHospital.getEmail());

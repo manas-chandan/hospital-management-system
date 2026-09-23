@@ -45,4 +45,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DuplicateEntryException.class)
+    public final ResponseEntity<ErrorDetails> handleDuplicateEntryHandleException(DuplicateEntryException ex, WebRequest request){
+
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "Duplicate Entry Detected", request.getDescription(false));
+        errorDetails.setErrors(ex.getDuplicateErrors());
+
+        return  new ResponseEntity<>(errorDetails,HttpStatus.CONFLICT);
+    }
 }

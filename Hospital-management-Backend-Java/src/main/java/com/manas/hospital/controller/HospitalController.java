@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.manas.hospital.entity.Hospital;
 import com.manas.hospital.service.HospitalSerivce;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class HospitalController {
 
@@ -26,7 +28,7 @@ public class HospitalController {
 	}
 	
 	@PostMapping("/api/hospitals")
-	public Hospital saveHospitals(@RequestBody Hospital hospital) {
+	public Hospital saveHospitals(@Valid @RequestBody Hospital hospital) {
 		return hospitalSerivce.save(hospital);
 	}
 	
@@ -36,7 +38,7 @@ public class HospitalController {
 	}
 	
 	@PutMapping("/api/hospitals/{id}")
-	public Hospital updateHospital(@PathVariable Long id,@RequestBody Hospital hospital) {
+	public Hospital updateHospital(@PathVariable Long id,@Valid @RequestBody Hospital hospital) {
 		return hospitalSerivce.updateHospitals(id,hospital);
 	}
 	

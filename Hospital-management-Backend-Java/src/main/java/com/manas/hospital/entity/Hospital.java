@@ -5,6 +5,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "hospitals")
@@ -14,10 +18,21 @@ public class Hospital {
 	@GeneratedValue(strategy = GenerationType.IDENTITY )
 	private Long id;
 	
+	@NotBlank(message="Hospital name required")
+	@Size(min=2,max=100,message="Name must be between 2 and 100 charecters")
 	private String name;
+
+	@NotBlank(message="Address is required")
 	private String address;
+
+	@NotBlank(message = "Phone is required")
+	@Pattern(regexp="^[+]?[0-9]{10,15}$",message="Invalid phone number")
 	private String phone;
+
+	@NotBlank(message="Email is required.")
+	@Email(message="Invalid email format")
 	private String email;
+	
 	public Long getId() {
 		return id;
 	}
